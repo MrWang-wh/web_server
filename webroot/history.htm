@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>观看历史</title>
+  <link rel="stylesheet" href="css/bootstrap.css">
+  <script src="js/libs/jquery-3.2.1.js"></script>
+  <script src="js/utils/utils.js"></script>
+  <script src="js/utils/ajaxBase.js"></script>
+  <script src="js/utils/ajaxLogin.js"></script>
+  <script src="js/utils/ajaxVideo.js"></script>
+  <script src="js/utils/ajaxStatus.js"></script>
+</head>
+<body>
+<div id="nav_vue"></div>
+<div class="container">
+  <div class="row clearfix">
+    <div class="col-md-12">
+      <h1 class="text-center">观看历史</h1>
+      <br>
+    </div>
+  </div>
+</div>
+<div id="panel_vue" class="container">
+
+  <template v-if="videosFound">
+    <div class="row clearfix">
+      <div class="col-md-12">
+        <template v-for="video in videos">
+          <div :class="['video-box', 'col-md-3', 'col-sm-4', 'col-xs-12', 'text-center']"
+               :onclick="`window.location.href='video.htm?id=${video.id}'`">
+            <div class="row clearfix">
+              <div class="col-md-12 col-sm-12 col-xs-6">
+                <img :src="STORAGE_SERVER + video.picUrl" width="210" height="140">
+              </div>
+              <div class="info col-md-12 col-sm-12 col-xs-6">
+                <h4>
+                  {{`${video.title.substr(0, 10)}${video.title.length > 10 ? ' ...' : ''}`}}
+                </h4>
+                <p>
+                  <i class="fa fa-thumbs-o-up" aria-hidden="true" style></i>
+                  {{video.countLike}}&nbsp;&nbsp;
+                  <i class="fa fa-television" aria-hidden="true"></i>
+                  {{video.countPlay}}
+                </p>
+                <p>
+                  {{`${video.uploadUsername.substr(0, 10)}${video.uploadUsername.length > 10 ? ' ...' : ''}`}}
+                </p>
+              </div>
+            </div>
+          </div>
+        </template>
+      </div>
+    </div>
+    <div class="row clearfix">
+      <br><br>
+      <div class="col-xs-2 col-sm-offset-2 text-right">
+        <button :class="['btn', 'btn-success', canBefore ? '' : 'disabled']" @click="before">上一页</button>
+      </div>
+      <div class="col-xs-6 col-xs-offset-1
+                  col-sm-3 col-sm-offset-1
+                  col-md-3 col-md-offset-1
+                  col-lg-2">
+        <div class="input-group">
+          <input v-model="to" class="form-control" type="number" :max="pages" min="1">
+          <span class="input-group-addon">
+            / {{pages}}
+          </span>
+          <span class="input-group-btn">
+            <button class="btn btn-info" @click="go">前往</button>
+          </span>
+        </div>
+      </div>
+      <div class="col-xs-2 col-xs-offset-1">
+        <button :class="['btn', 'btn-primary', canNext ? '' : 'disabled']" @click="next">下一页</button>
+      </div>
+    </div>
+  </template>
+</div>
+<div id="footer_vue"></div>
+</body>
+<script src="js/libs/bootstrap.js"></script>
+<script src="js/libs/vue.js"></script>
+
+<script src="js/vue/nav_vue.js"></script>
+<script src="js/vue/footer_vue.js"></script>
+<script>
+    const panel_vue = new Vue({
+        el: '#panel_vue',
+        data: {
+
+            methods: {
+                next(e) {
+                    if (e.target.classList.contains("disabled")) {
+                        return;
+                    }
+                    this.offset++;
+                    const {
+                        page: {
+                            hasNextPage = false
+                            , hasPreviousPage = false
+                            , list = {}
+                            , pages = 0
+                        }
+                    } = ajaxVideo.show(this.offset);
+                    this.videos = list;
+                    this.videosFound = this.videos.length !== 0;
+                    this.canNext = hasNextPage;
+                    this.canBefore = hasPreviousPage;
+                    this.to = this.offset;
+                    this.pages = pages;
+                }, before(e) {
+                    if (e.target.classList.contains("disabled")) {
+                        return;
+                    }
+                    this.offset--;
+                    const {
+                        page: {
+                            hasNextPage = false
+                            , hasPreviousPage = false
+                            , list = {}
+                            , pages = 0
+                        }
+                    } = ajaxVideo.show(this.offset);
+                    this.videos = list;
+                    this.videosFound = this.videos.length !== 0;
+                    this.canNext = hasNextPage;
+                    this.canBefore = hasPreviousPage;
+                    this.to = this.offset;
+                    this.pages = pages;
+                }, go() {
+                    if (this.to < 1 || this.to > this.pages) {
+                        this.to = this.offset;
+                        return;
+                    }
+                    this.offset = this.to;
+                    const {
+                        page: {
+                            hasNextPage = false
+                            , hasPreviousPage = false
+                            , list = {}
+                            , pages = 0
+                        }
+                    } = ajaxVideo.show(this.offset);
+                    this.videos = list;
+                    this.videosFound = this.videos.length !== 0;
+                    this.canNext = hasNextPage;
+                    this.canBefore = hasPreviousPage;
+                    this.pages = pages;
+                }
+            }
+        }
+    })
+</script>
+</html>

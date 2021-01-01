@@ -26,6 +26,22 @@ const utils = {
     const hour = `00${time.hour}`.substr(-2);
     const minute = `00${time.minute}`.substr(-2);
     const second = `00${time.second}`.substr(-2);
+    console.log("========================")
+    console.log(localdatetime)
+    // let date=new Date(localdatetime);
+    // let year=date.getFullYear();
+    // let month=date.getMonth()+1;
+    // let day=date.getDate();
+    // let hour=date.getHours();
+    // let minute=date.getMinutes();
+    // let second=date.getSeconds();
+    // month=parseInt(month)<10?"0"+month:month;
+    // day=parseInt(day)<10?"0"+day:day;
+    // hour=parseInt(hour)<10?"0"+hour:hour;
+    // minute=parseInt(minute)<10?"0"+minute:minute;
+    // second=parseInt(second)<10?"0"+second:second;
+    // const d=year+"-"+month+"-"+day+" "+hour+":"+minute+":"+second;
+    // return d
     return new Date(`${year}/${month}/${day} ${hour}:${minute}:${second}`);
   }
 };

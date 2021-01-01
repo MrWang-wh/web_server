@@ -28,7 +28,7 @@ const nav_vue = new Vue({
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
               </button>
-              <a class="navbar-brand" href="index.htm">cilicili 嗨视频</a>
+              <a class="navbar-brand" href="index.htm">hkvideo</a>
             </div>
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
               <ul class="nav navbar-nav">
@@ -52,15 +52,28 @@ const nav_vue = new Vue({
                   </li>
                   <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                      {{user.username}} <strong class="caret"></strong>
+                       <i class="fa fa-user-circle" aria-hidden="true" style="font-size: 18px"></i>
+                       <strong class="caret"></strong>
                     </a>
                     <ul class="dropdown-menu">
+                      <li>
+                        <p style="font-size: 16px;text-align: center">
+                        {{user.username}}
+                        </p>
+                      </li>
+                      <li class="divider"></li>
+                      <li>
+                        <a href="history.htm">观看历史</a>
+                      </li>
+                      <li>
+                        <a href="collection.htm">我的收藏</a>
+                      </li>
                       <li>
                         <a href="settings.htm">个人设置</a>
                       </li>
                       <li class="divider"></li>
                       <li>
-                        <a href="#" @click="logout">退出</a>
+                        <a href="logout.htm" @click="logout">退出</a>
                       </li>
                     </ul>
                   </li>

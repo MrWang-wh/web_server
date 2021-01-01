@@ -5,8 +5,8 @@ const footer_vue = new Vue({
 	  <div class="row clearfix">
 	    <div class="col-md-12">
 	      <hr>
-	      <p class="text-center">cilicili 嗨视频</p>
-	      <p class="text-center">2018 @jz2</p>
+	      <p class="text-center">hkvideo</p>
+	      <p class="text-center">2020 @zdtnl</p>
 	      <br>
 	    </div>
 	  </div>
