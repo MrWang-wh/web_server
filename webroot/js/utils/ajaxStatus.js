@@ -19,6 +19,7 @@ const VIDEO_INFO = ((id) => {
     };
   } else {
     const video = ajaxVideo.findId(id);
+    console.log(video)
     if (video.status === 'success') {
       video.video.uploadTime = utils.calcTime(video.video.uploadTime.dateTime);
     }

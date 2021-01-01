@@ -7,6 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>主页 - cilicili</title>
   <link rel="stylesheet" href="css/bootstrap.css">
+  <link href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
   <script src="js/libs/jquery-3.2.1.js"></script>
   <script src="js/utils/utils.js"></script>
   <script src="js/utils/ajaxBase.js"></script>
@@ -18,7 +19,7 @@
       margin: auto;
       max-height: 400px;
     }
-    
+
     .carousel-control .ltgt {
       margin: auto;
       width: 50px;
@@ -29,7 +30,11 @@
       position: relative;
       top: 45%;
     }
-    
+
+    /*.carousel-container{*/
+    /*  width: 450px;*/
+    /*  border: 1px;*/
+    /*}*/
     .video-box {
       cursor: pointer;
       padding: 5px;
@@ -53,101 +58,137 @@
   </style>
 </head>
 <body>
-<div id="nav_vue"></div>
-<div class="container">
-  <div class="row clearfix">
-    <div class="col-md-12">
-      <div class="carousel slider" id="banner">
-        <ol class="carousel-indicators">
-          <li data-slide-to="0" data-target="#banner" class="active"></li>
-          <li data-slide-to="1" data-target="#banner"></li>
-        </ol>
-        <div class="carousel-inner">
-          <div class="item active">
-            <img src="img/banner_0.png"/>
-          </div>
-          <div class="item">
-            <img src="img/banner_1.png"/>
-          </div>
-          <div data-slide="prev" href="#banner" class="left carousel-control" style="cursor: pointer">
-            <div class="ltgt">&lt;</div>
-          </div>
-          <div data-slide="next" href="#banner" class="right carousel-control" style="cursor: pointer">
-            <div class="ltgt">&gt;</div>
+<div id="all_vue">
+  <div id="nav_vue"></div>
+  <div class="container" v-if="videosFound">
+    <div class="row clearfix">
+      <div class="col-md-12" style="height: 360px">
+        <div class="col-md-6" style="height: 360px">
+          <div class="carousel slider" id="banner">
+            <ol class="carousel-indicators">
+              <li data-slide-to="0" data-target="#banner" class="active"></li>
+              <li data-slide-to="1" data-target="#banner"></li>
+              <li data-slide-to="2" data-target="#banner"></li>
+            </ol>
+            <div class="carousel-inner">
+              <div class="item active" :onclick="`window.location.href='video.htm?id=${countPlayNo(0).id}'`">
+                <img :src="STORAGE_SERVER + countPlayNo(0).picUrl" width="540px" height="360px">
+                <div class="carousel-caption d-none d-md-block">
+                  <p style="font-size: 30px;color: gold"></p>
+                </div>
+              </div>
+              <div class="item" :onclick="`window.location.href='video.htm?id=${countPlayNo(1).id}'`">
+                <img :src="STORAGE_SERVER + countPlayNo(1).picUrl" width="540px" height="360px">
+                <div class="carousel-caption d-none d-md-block">
+                  <p style="font-size: 30px;color: gold"></p>
+                </div>
+              </div>
+              <div class="item" :onclick="`window.location.href='video.htm?id=${countPlayNo(2).id}'`">
+                <img :src="STORAGE_SERVER + countPlayNo(2).picUrl" width="540px" height="360px">
+                <div class="carousel-caption d-none d-md-block">
+                  <p style="font-size: 30px;color: gold"></p>
+                </div>
+              </div>
+              <div data-slide="prev" href="#banner" class="left carousel-control" style="cursor: pointer">
+                <div class="ltgt">&lt;</div>
+              </div>
+              <div data-slide="next" href="#banner" class="right carousel-control" style="cursor: pointer">
+                <div class="ltgt">&gt;</div>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-    </div>
-  </div>
-</div>
-<div id="all_vue" class="container">
-  <div class="row clearfix">
-    <div class="col-md-12">
-      <hr>
-      <h3>最新视频 🔥</h3>
-      <br>
-    </div>
-  </div>
-  <template v-if="videosFound">
-    <div class="row clearfix">
-      <div class="col-md-12">
-        <template v-for="video in videos">
-          <div :class="['video-box', 'col-md-3', 'col-sm-4', 'col-xs-12', 'text-center']"
-               :onclick="`window.location.href='video.htm?id=${video.id}'`">
+        <div class="col-md-6" style="height: 360px">
+          <div class="col-md-6" v-for="video in maxCountPlay(4)" style="margin-bottom: 40px;">
+            <div :class="['video-box', 'text-center']"
+            :onclick="`window.location.href='video.htm?id=${video.id}'`">
             <div class="row clearfix">
-              <div class="col-md-12 col-sm-12 col-xs-6">
+              <div class="col-md-12" style="text-align: center;">
                 <img :src="STORAGE_SERVER + video.picUrl" width="210" height="140">
-              </div>
-              <div class="info col-md-12 col-sm-12 col-xs-6">
-                <h4>
+                <p style="font-size: 12px">
                   {{`${video.title.substr(0, 10)}${video.title.length > 10 ? ' ...' : ''}`}}
-                </h4>
-                <p>
-                  👍 {{video.countLike}}&nbsp;&nbsp;📺 {{video.countPlay}}
-                </p>
-                <p>
-                  {{`${video.uploadUsername.substr(0, 10)}${video.uploadUsername.length > 10 ? ' ...' : ''}`}}
                 </p>
               </div>
             </div>
           </div>
-        </template>
-      </div>
-    </div>
-    <div class="row clearfix">
-      <br><br>
-      <div class="col-xs-2 col-sm-offset-2 text-right">
-        <button :class="['btn', 'btn-success', canBefore ? '' : 'disabled']" @click="before">上一页</button>
-      </div>
-      <div class="col-xs-6 col-xs-offset-1
-                  col-sm-3 col-sm-offset-1
-                  col-md-3 col-md-offset-1
-                  col-lg-2">
-        <div class="input-group">
-          <input v-model="to" class="form-control" type="number" :max="pages" min="1">
-          <span class="input-group-addon">
-            / {{pages}}
-          </span>
-          <span class="input-group-btn">
-            <button class="btn btn-info" @click="go">前往</button>
-          </span>
+          </div>
         </div>
       </div>
-      <div class="col-xs-2 col-xs-offset-1">
-        <button :class="['btn', 'btn-primary', canNext ? '' : 'disabled']" @click="next">下一页</button>
-      </div>
     </div>
-  </template>
-  <template v-else>
+  </div>
+  <div class="container">
     <div class="row clearfix">
-      <div class="col-md-12 text-center">
-        <h1 class="text-center">没有更多视频</h1>
+      <div class="col-md-12">
+        <hr>
+        <h3>最新视频 </h3>
         <br>
       </div>
     </div>
-  </template>
+    <template v-if="videosFound">
+      <div class="row clearfix">
+        <div class="col-md-12">
+          <template v-for="video in videos">
+            <div :class="['video-box', 'col-md-3', 'col-sm-4', 'col-xs-12', 'text-center']"
+                 :onclick="`window.location.href='video.htm?id=${video.id}'`">
+              <div class="row clearfix">
+                <div class="col-md-12 col-sm-12 col-xs-6">
+                  <img :src="STORAGE_SERVER + video.picUrl" width="210" height="140">
+                </div>
+                <div class="info col-md-12 col-sm-12 col-xs-6">
+                  <h4>
+                    {{`${video.title.substr(0, 10)}${video.title.length > 10 ? ' ...' : ''}`}}
+                  </h4>
+                  <p>
+                    <i class="fa fa-thumbs-o-up" aria-hidden="true" style></i>
+                    {{video.countLike}}&nbsp;&nbsp;
+                    <i class="fa fa-television" aria-hidden="true"></i>
+                    {{video.countPlay}}
+                  </p>
+                  <p>
+                    {{`${video.uploadUsername.substr(0, 10)}${video.uploadUsername.length > 10 ? ' ...' : ''}`}}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </template>
+        </div>
+      </div>
+      <div class="row clearfix">
+        <br><br>
+        <div class="col-xs-2 col-sm-offset-2 text-right">
+          <button :class="['btn', 'btn-success', canBefore ? '' : 'disabled']" @click="before">上一页</button>
+        </div>
+        <div class="col-xs-6 col-xs-offset-1
+                  col-sm-3 col-sm-offset-1
+                  col-md-3 col-md-offset-1
+                  col-lg-2">
+          <div class="input-group">
+            <input v-model="to" class="form-control" type="number" :max="pages" min="1">
+            <span class="input-group-addon">
+            / {{pages}}
+          </span>
+            <span class="input-group-btn">
+            <button class="btn btn-info" @click="go">前往</button>
+          </span>
+          </div>
+        </div>
+        <div class="col-xs-2 col-xs-offset-1">
+          <button :class="['btn', 'btn-primary', canNext ? '' : 'disabled']" @click="next">下一页</button>
+        </div>
+      </div>
+    </template>
+    <template v-else>
+      <div class="row clearfix">
+        <div class="col-md-12 text-center">
+          <h1 class="text-center">没有更多视频</h1>
+          <br>
+        </div>
+      </div>
+    </template>
+  </div>
+  <div id="footer_vue"></div>
 </div>
-<div id="footer_vue"></div>
+
 
 <script src="js/libs/bootstrap.js"></script>
 <script src="js/libs/vue.js"></script>
@@ -243,6 +284,25 @@
         this.canNext = hasNextPage;
         this.canBefore = hasPreviousPage;
         this.pages = pages;
+      },maxCountPlay(num){
+        let max= new Array();
+        for(let i = 0;i < this.videos.length;i++){
+          max.unshift(this.videos[i])
+        }
+        max.sort((a,b)=>{
+          return(b.countPlay-a.countPlay)
+        })
+        max = max.splice(3,6)
+        return max
+      },countPlayNo(num){
+        let video= new Array();
+        for(let i = 0;i < this.videos.length;i++){
+          video .unshift(this.videos[i])
+        }
+        video.sort((a,b)=>{
+          return(b.countPlay-a.countPlay)
+        })
+        return video[num]
       }
     }
   });
