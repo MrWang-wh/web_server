@@ -6,8 +6,21 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>上传 - cilicili</title>
-  <link rel="stylesheet" href="css/bootstrap.css">
   <script src="js/libs/jquery-3.2.1.js"></script>
+  <link rel="stylesheet" href="css/bootstrap.css">
+  <script src="js/libs/bootstrap.js"></script>
+  <script src="js/libs/vue.js"></script>
+  <link href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+  <!-- import stylesheet -->
+  <link rel="stylesheet" href="//unpkg.com/iview/dist/styles/iview.css">
+  <!-- import iView -->
+  <script src="//unpkg.com/iview/dist/iview.min.js"></script>
+
+
+  <!--  <link rel="stylesheet" type="text/css" href="http://unpkg.com/iview/dist/styles/iview.css">-->
+<!--  <script type="text/javascript" src="http://unpkg.com/iview/dist/iview.min.js"></script>-->
+
+
   <script src="js/utils/utils.js"></script>
   <script src="js/utils/ajaxBase.js"></script>
   <script src="js/utils/ajaxLogin.js"></script>
@@ -28,7 +41,7 @@
       <div class="col-md-12 text-center">
         <br>
         <form name="videoform" style="display: none">
-          <input name="file" @change="selectVideo" id="videofile" type="file" accept=".mp4">
+          <input name="file" @change="selectVideo" id="videofile" type="file" accept=".*">
         </form>
         <button class="btn btn-primary" onclick="$('#videofile').click()">选择视频文件</button>
       </div>
@@ -60,23 +73,28 @@
               <td><input class="form-control" type="text" v-model="videofile.description" minlength="1" maxlength="500">
               </td>
             </tr>
-            <tr>
-              <td>封面图</td>
-              <td>
-                <form name="imageform" style="display: none">
-                  <input name="file" @change="selectImage" id="imagefile" type="file" accept=".png">
-                </form>
-                <button v-if="!imageSelected" class="btn btn-info" onclick="$('#imagefile').click()">
-                  选择图片文件
-                </button>
-                <img v-if="imageData.length > 0" :src="imageData" onclick="$('#imagefile').click()"
-                     width="300" height="200" style="cursor: pointer" title="点击重新选择封面图">
-                <p style="margin-top: 10px; max-width: 500px; overflow-wrap: break-word">{{imageInfo}}</p>
-              </td>
-            </tr>
+<!--            <tr>-->
+<!--              <td>封面图</td>-->
+<!--              <td>-->
+<!--                <form name="imageform" style="display: none">-->
+<!--                  <input name="file" @change="selectImage" id="imagefile" type="file" accept=".png">-->
+<!--                </form>-->
+<!--                <button v-if="!imageSelected" class="btn btn-info" onclick="$('#imagefile').click()">-->
+<!--                  选择图片文件-->
+<!--                </button>-->
+<!--                <img v-if="imageData.length > 0" :src="imageData" onclick="$('#imagefile').click()"-->
+<!--                     width="300" height="200" style="cursor: pointer" title="点击重新选择封面图">-->
+<!--                <p style="margin-top: 10px; max-width: 500px; overflow-wrap: break-word">{{imageInfo}}</p>-->
+<!--              </td>-->
+<!--            </tr>-->
             </tbody>
           </table>
-          <button :class="['btn', 'btn-success', uploadClicked ? 'disabled' : '']" @click="upload">上传</button>
+<!--          <button :class="['btn', 'btn-success', uploadClicked ? 'disabled' : '']"-->
+<!--                  @click="upload()">-->
+<!--            上传-->
+<!--          </button>-->
+          <Button @click="loadUpdate();" :class="['btn', 'btn-success', uploadClicked ? 'disabled' : '']">上传</Button>
+
         </div>
       </div>
       <div class="row clearfix">
@@ -103,8 +121,6 @@
 </div>
 <div id="footer_vue"></div>
 
-<script src="js/libs/bootstrap.js"></script>
-<script src="js/libs/vue.js"></script>
 
 <script src="js/vue/nav_vue.js"></script>
 <script src="js/vue/footer_vue.js"></script>
@@ -121,30 +137,31 @@
         , uploadUserid: ''
         , description: ''
       }
-      , imageData: ''
+      // , imageData: ''
       , videoSelected: false
-      , totalInfo: '请选择 mp4 视频文件'
+      , totalInfo: '请选择视频文件'
       , totalInfoColor: 'danger'
-      , imageInfo: ''
+      // , imageInfo: ''
       , uploadInfo: '等待上传'
       , uploadInfoColor: 'danger'
-      , imageSelected: false
+      // , imageSelected: false
       , uploadClicked: false
       , uploadFinished: false
       , id: '-1'
+      ,loading:false
     }
     , methods: {
       selectVideo(e) {
         if (e.target.files[0] === undefined) {
           this.videoSelected = false;
-          this.totalInfo = '请选择 mp4 视频文件';
+          this.totalInfo = '请选择视频文件';
           this.totalInfoColor = 'danger';
           return;
         }
         let videosize = e.target.files[0].size;
         if (videosize >= 52428800) {
           this.videoSelected = false;
-          this.totalInfo = '所选文件大小超过上限 50M，请重新选择';
+          this.totalInfo = '所选文件大小超过上限 500M，请重新选择';
           this.totalInfoColor = 'danger';
           this.videofile.title = '';
           this.videofile.description = '';
@@ -156,31 +173,39 @@
           this.videofile.description = '';
         }
       }
-      , selectImage(e) {
-        this.imageData = '';
-        if (e.target.files[0] === undefined) {
-          this.imageInfo = '请选择封面图文件';
-          this.imageSelected = false;
-          return;
-        }
-        let imagesize = e.target.files[0].size;
-        if (imagesize >= 52428800) {
-          this.imageInfo = '所选图片大小超过上限 50M，请重新选择';
-          this.imageSelected = false;
-        } else {
-          this.imageInfo = '已选择 ' + e.target.files[0].name;
-          this.imageSelected = true;
-          let imageReader = new FileReader();
-          imageReader.onload = (event) => {
-            this.imageData = event.target.result;
-          };
-          imageReader.readAsDataURL(e.target.files[0]);
-        }
+      // , selectImage(e) {
+      //   this.imageData = '';
+      //   if (e.target.files[0] === undefined) {
+      //     this.imageInfo = '请选择封面图文件';
+      //     this.imageSelected = false;
+      //     return;
+      //   }
+      //   let imagesize = e.target.files[0].size;
+      //   if (imagesize >= 52428800) {
+      //     this.imageInfo = '所选图片大小超过上限 50M，请重新选择';
+      //     this.imageSelected = false;
+      //   } else {
+      //     this.imageInfo = '已选择 ' + e.target.files[0].name;
+      //     this.imageSelected = true;
+      //     let imageReader = new FileReader();
+      //     imageReader.onload = (event) => {
+      //       this.imageData = event.target.result;
+      //     };
+      //     imageReader.readAsDataURL(e.target.files[0]);
+      //   }
+      // }
+      ,loadUpdate(){
+        this.$Loading.start()
+        console.log(this.$Loading)
+        this.upload()
+        this.$Loading.finish()
       }
       , upload() {
+        // this.loading = true
+        // this.$Loading.start()
         this.uploadInfo = '';
         this.uploadInfoColor = 'danger';
-        let imagefile = $('#imagefile')[0].value;
+        // let imagefile = $('#imagefile')[0].value;
         if (this.videofile.title.trim().length === 0) {
           this.uploadInfo = '视频标题不能为空';
           return;
@@ -189,30 +214,30 @@
           this.uploadInfo = '视频描述不能为空';
           return;
         }
-        if (!this.imageSelected) {
-          this.uploadInfo = '封面图片未选择';
-          return;
-        }
+        // if (!this.imageSelected) {
+        //   this.uploadInfo = '封面图片未选择';
+        //   return;
+        // }
         this.uploadClicked = true;
         this.uploadInfo = '正在上传 ...';
         this.uploadInfoColor = 'warning';
-        let {status, msg, token} = ajaxLogin.apply("upload_file");
-        if (status === undefined || status === "failure") {
-          this.uploadInfo = msg || '网络连接异常';
-          this.uploadInfoColor = 'danger';
-        } else if (status === "success") {
-          utils.setCookie("apply", token);
-        }
+        // let {status, msg, token} = ajaxLogin.apply("upload_file");
+        // if (status === undefined || status === "failure") {
+        //   this.uploadInfo = msg || '网络连接异常';
+        //   this.uploadInfoColor = 'danger';
+        // } else if (status === "success") {
+        //   utils.setCookie("apply", token);
+        // }
         let url = "";
-        ({status, msg, url} = ajaxUpload.upload(new FormData(document.forms['imageform'])));
-        if (status === undefined || status === "failure") {
-          msg = msg || '网络连接异常';
-          this.uploadInfo = '图片上传失败：' + msg + '， 请刷新后重试';
-          this.uploadInfoColor = 'danger';
-          return;
-        } else if (status === "success") {
-          this.videofile.picUrl = url;
-        }
+        // ({status, msg, url} = ajaxUpload.upload(new FormData(document.forms['imageform'])));
+        // if (status === undefined || status === "failure") {
+        //   msg = msg || '网络连接异常';
+        //   this.uploadInfo = '图片上传失败：' + msg + '， 请刷新后重试';
+        //   this.uploadInfoColor = 'danger';
+        //   return;
+        // } else if (status === "success") {
+        //   this.videofile.picUrl = url;
+        // }
         ({status, msg, token} = ajaxLogin.apply("upload_file"));
         if (status === undefined || status === "failure") {
           msg = msg || '网络连接异常';
@@ -221,7 +246,7 @@
         } else if (status === "success") {
           utils.setCookie("apply", token);
         }
-        ({status, msg, url} = ajaxUpload.upload(new FormData(document.forms['videoform'])));
+        ({status, msg, url,picUrl} = ajaxUpload.upload(new FormData(document.forms['videoform'])));
         if (status === undefined || status === "failure") {
           msg = msg || '网络连接异常';
           this.uploadInfo = '视频上传失败：' + msg + '， 请刷新后重试';
@@ -229,6 +254,7 @@
           return;
         } else if (status === "success") {
           this.videofile.url = url;
+          this.videofile.picUrl = picUrl
         }
         let video = {};
         ({status, msg, video} = ajaxVideo.add(this.videofile));
@@ -243,6 +269,7 @@
           this.uploadFinished = true;
         }
       }
+
     }
   })
 </script>
