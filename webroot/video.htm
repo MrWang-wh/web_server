@@ -15,6 +15,7 @@
   <script src="js/utils/ajaxLogin.js"></script>
   <script src="js/utils/ajaxVideo.js"></script>
   <script src="js/utils/ajaxCollect.js"></script>
+  <script src="js/utils/ajaxHistory.js"></script>
   <script src="js/utils/ajaxStatus.js"></script>
   <script src="js/utils/ajaxComment.js"></script>
   <script src="js/utils/ajaxBarrage.js"></script>
@@ -378,7 +379,7 @@
     console.log(collectedContent.page)
 
     for(let video in collectedContent.page.list){
-        console.log("***************************"+collectedContent.page)
+        // console.log("***************************"+collectedContent.page)
         // console.log(collectedContent.page.list[video].id)
         // console.log(VIDEO_INFO.video.id)
         if(collectedContent.page.list[video].id === VIDEO_INFO.video.id){
@@ -407,7 +408,6 @@
     //         }
     //     } = collectedContent);
     // }
-
 
     const video_vue = new Vue({
         el: '#video_vue'
@@ -449,10 +449,6 @@
             , commentMsg: ''
             , videoBarrage: {}
         }
-        , created(){
-            // console.log(VIDEO_INFO.video.id)
-
-        }
         , methods: {
             like() {
                 if (!this.liked) {
@@ -462,12 +458,19 @@
                 }
             },collect(){
                 if(!this.collected){
-                    console.log("++++++++++++++++++++++++++++" +VIDEO_INFO.video.id)
+                    // console.log("++++++++++++++++++++++++++++" +VIDEO_INFO.video.id)
                     ajaxCollect.collect({
                         userId: LOGIN_STATUS.user.id,
                         videoId:this.video.id
                     });
                     this.collected = true
+                }
+                else {
+                    ajaxCollect.unCollect({
+                        userId: LOGIN_STATUS.user.id,
+                        videoId:this.video.id
+                    })
+                    this.collected = false
                 }
             }, sendBarrage() {
                 if (this.newBarrage.content.trim().length === 0) {
@@ -540,11 +543,11 @@
                 comment.countLike++;
                 $(`#comment-${idx}`)[0].style.display = 'none';
                 $(`#comment-liked-${idx}`)[0].style.display = 'block';
-            }, deleteComment(e) {
-                const idx = e.target.id.replace('comment-delete-', '');
-                const comment = this.comments[idx];
-                ajaxComment.delete(comment.id);
-                delete this.comments[idx];
+            // }, deleteComment(e) {
+            //     const idx = e.target.id.replace('comment-delete-', '');
+            //     const comment = this.comments[idx];
+            //     ajaxComment.delete(comment.id);
+            //     delete this.comments[idx];
             }, calcTime(localdatetime) {
                 return utils.calcTime(localdatetime.dateTime).toLocaleString();
             }, next(e) {
@@ -616,6 +619,10 @@
                 return '#' + (Number.isNaN(res) ? "ffffff" : `000000${res.toString(16)}`.substr(-6));
             }
         }, mounted() {
+            ajaxHistory.add({
+                userId: LOGIN_STATUS.user.id,
+                videoId: this.video.id
+            })
             const {barrages} = ajaxBarrage.findId(this.video.id);
             const rawBarrages = barrages || [{
                 content: ''
