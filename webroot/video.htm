@@ -362,7 +362,10 @@
 <script>
     // 播放量更新
     ajaxVideo.play(VIDEO_INFO.video.id);
-
+    ajaxHistory.add({
+      userId: LOGIN_STATUS.user.id,
+      videoId: VIDEO_INFO.video.id
+    })
     // 加载评论
     let hasNextPage = false;
     let hasPreviousPage = false;
@@ -619,10 +622,10 @@
                 return '#' + (Number.isNaN(res) ? "ffffff" : `000000${res.toString(16)}`.substr(-6));
             }
         }, mounted() {
-            ajaxHistory.add({
+            /*ajaxHistory.add({
                 userId: LOGIN_STATUS.user.id,
                 videoId: this.video.id
-            })
+            })*/
             const {barrages} = ajaxBarrage.findId(this.video.id);
             const rawBarrages = barrages || [{
                 content: ''

@@ -159,7 +159,7 @@
           return;
         }
         let videosize = e.target.files[0].size;
-        if (videosize >= 52428800) {
+        if (videosize >= 524288000) {
           this.videoSelected = false;
           this.totalInfo = '所选文件大小超过上限 500M，请重新选择';
           this.totalInfoColor = 'danger';
