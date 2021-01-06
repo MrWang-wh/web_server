@@ -18,19 +18,19 @@
       cursor: pointer;
       padding: 5px;
     }
-    
+
     .video-box .info {
       text-shadow: 0 0 1px #aeaeae;
     }
-    
+
     .video-box .info:hover {
       text-shadow: 0 0 1px #000000;
     }
-    
+
     .video-box img {
       border-radius: 5px;
     }
-    
+
     .video-box img:hover {
       box-shadow: #5e5e5e 1px 1px 5px;
     }
@@ -122,9 +122,9 @@
   let list = [];
   let pages = 0;
   let total = 0;
-  
+
   const page = ajaxVideo.find(1, utils.getRequest("q") || '');
-  
+
   if (page.page !== undefined) {
     ({
       page: {
@@ -136,7 +136,7 @@
       }
     } = page);
   }
-  
+
   const search_vue = new Vue({
     el: '#search_vue'
     , data: {

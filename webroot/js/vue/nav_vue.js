@@ -12,7 +12,9 @@ const nav_vue = new Vue({
   , methods: {
     logout() {
       window.location = 'logout.htm';
-    }, search() {
+    },
+    search() {
+      //window.location = 'search.htm?q='+this.q;
       window.location = `search.htm?q=${this.q || ''}`;
     }
   }
@@ -28,12 +30,12 @@ const nav_vue = new Vue({
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
               </button>
-              <a class="navbar-brand" href="index.htm">hkvideo</a>
+              <a class="navbar-brand" href="index.htm">🎦 hkvideo</a>
             </div>
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
               <ul class="nav navbar-nav">
                 <li :class="{active: page==='index'}">
-                  <a href="index.htm">主页</a>
+                  <a href="index.htm">🏠 主页</a>
                 </li>
                 <li v-if="videoFound" :class="{active: page==='video'}">
                   <a :href="'video.htm?id=' + video.id">{{video.title}}</a>
@@ -41,9 +43,9 @@ const nav_vue = new Vue({
               </ul>
               <div class="navbar-form navbar-left">
                 <div class="form-group">
-                  <input v-model="q" type="text" class="form-control" placeholder="搜索视频" @keyup.enter="search">
+                  <input v-model="q" id="sear" type="text" class="form-control" placeholder="搜索视频 🔍" @keyup.enter="search">
                 </div>
-                <button class="btn btn-primary" @click="search">搜索</button>
+                <button class="btn btn-primary" @click="search" onclick="javascript:window.location.href='search.htm?q='+document.getElementById('sear').value">搜索 🔍</button>
               </div>
               <ul class="nav navbar-nav navbar-right">
                 <template v-if="login">

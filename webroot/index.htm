@@ -39,19 +39,19 @@
       cursor: pointer;
       padding: 5px;
     }
-    
+
     .video-box .info {
       text-shadow: 0 0 1px #aeaeae;
     }
-    
+
     .video-box .info:hover {
       text-shadow: 0 0 1px #000000;
     }
-    
+
     .video-box img {
       border-radius: 5px;
     }
-    
+
     .video-box img:hover {
       box-shadow: #5e5e5e 1px 1px 5px;
     }
@@ -60,7 +60,14 @@
 <body>
 <div id="all_vue">
   <div id="nav_vue"></div>
-  <div class="container" v-if="videosFound">
+  <div class="container" v-if="videosFound&&offset==1">
+    <div class="row clearfix">
+      <div class="col-md-12">
+        <hr>
+        <h3>最热视频 🔥 🔥 🔥</h3>
+        <br>
+      </div>
+    </div>
     <div class="row clearfix">
       <div class="col-md-12" style="height: 360px">
         <div class="col-md-6" style="height: 360px">
@@ -119,8 +126,8 @@
   <div class="container">
     <div class="row clearfix">
       <div class="col-md-12">
-        <hr>
-        <h3>最新视频 </h3>
+        <hr v-if="offset==1">
+        <h3>最新视频 🚩 </h3>
         <br>
       </div>
     </div>
@@ -201,9 +208,9 @@
   let hasPreviousPage = false;
   let list = [];
   let pages = 0;
-  
+
   const page = ajaxVideo.show(1);
-  
+
   if (page.page !== undefined) {
     ({
       page: {
@@ -214,7 +221,7 @@
       }
     } = page);
   }
-  
+
   const all_vue = new Vue({
     el: '#all_vue'
     , data: {

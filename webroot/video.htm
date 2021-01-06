@@ -21,110 +21,110 @@
   <script src="js/utils/ajaxBarrage.js"></script>
   <script src="js/libs/barrages.js"></script>
   <style>
-      .comment {
-          border: none;
-          border-top: 1px #000000 dashed;
-          padding: 20px;
-          font-size: 18px;
-          overflow-wrap: break-word;
-      }
+    .comment {
+      border: none;
+      border-top: 1px #000000 dashed;
+      padding: 20px;
+      font-size: 18px;
+      overflow-wrap: break-word;
+    }
 
-      .comment .username {
-          font-weight: bold;
-      }
+    .comment .username {
+      font-weight: bold;
+    }
 
-      .comment .sendtime {
-          font-style: italic;
-      }
+    .comment .sendtime {
+      font-style: italic;
+    }
 
-      .comment .like {
-          user-select: none;
-      }
+    .comment .like {
+      user-select: none;
+    }
 
-      .comment .content {
-          font-size: 24px;
-      }
+    .comment .content {
+      font-size: 24px;
+    }
 
+    #canvasBarrage {
+      position: absolute;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .fa-thumbs-up:hover, .fa-heart:hover {
+      color: deepskyblue;
+
+    }
+
+    .my-icon {
+      color: deepskyblue;
+    }
+
+    @media screen and (min-width: 1281px) {
       #canvasBarrage {
-          position: absolute;
-          pointer-events: none;
-          z-index: 1;
+        width: 960px;
+        height: 540px;
       }
 
-      .fa-thumbs-up:hover, .fa-heart:hover {
-          color: deepskyblue;
+      #videoBarrage {
+        width: 960px;
+        height: 540px;
+      }
+    }
 
+    @media screen and (max-width: 1280px) {
+      #canvasBarrage {
+        width: 800px;
+        height: 450px;
       }
 
-      .my-icon {
-          color: deepskyblue;
+      #videoBarrage {
+        width: 800px;
+        height: 450px;
+      }
+    }
+
+    @media screen and (max-width: 1080px) {
+      #canvasBarrage {
+        width: 640px;
+        height: 360px;
       }
 
-      @media screen and (min-width: 1281px) {
-          #canvasBarrage {
-              width: 960px;
-              height: 540px;
-          }
+      #videoBarrage {
+        width: 640px;
+        height: 360px;
+      }
+    }
 
-          #videoBarrage {
-              width: 960px;
-              height: 540px;
-          }
+    @media screen and (max-width: 720px) {
+      #canvasBarrage {
+        width: 480px;
+        height: 270px;
       }
 
-      @media screen and (max-width: 1280px) {
-          #canvasBarrage {
-              width: 800px;
-              height: 450px;
-          }
+      #videoBarrage {
+        width: 480px;
+        height: 270px;
+      }
+    }
 
-          #videoBarrage {
-              width: 800px;
-              height: 450px;
-          }
+    @media screen and (max-width: 480px) {
+      #canvasBarrage {
+        width: 320px;
+        height: 180px;
       }
 
-      @media screen and (max-width: 1080px) {
-          #canvasBarrage {
-              width: 640px;
-              height: 360px;
-          }
-
-          #videoBarrage {
-              width: 640px;
-              height: 360px;
-          }
+      #videoBarrage {
+        width: 320px;
+        height: 180px;
       }
 
-      @media screen and (max-width: 720px) {
-          #canvasBarrage {
-              width: 480px;
-              height: 270px;
-          }
-
-          #videoBarrage {
-              width: 480px;
-              height: 270px;
-          }
+      .my-icon-div {
+        height: 60px;
+        line-height: 60px;
+        text-align: right;
       }
-
-      @media screen and (max-width: 480px) {
-          #canvasBarrage {
-              width: 320px;
-              height: 180px;
-          }
-
-          #videoBarrage {
-              width: 320px;
-              height: 180px;
-          }
-
-          .my-icon-div {
-              height: 60px;
-              line-height: 60px;
-              text-align: right;
-          }
-      }
+    }
   </style>
 </head>
 <body>
@@ -360,295 +360,308 @@
 <script src="js/vue/nav_vue.js"></script>
 <script src="js/vue/footer_vue.js"></script>
 <script>
-    // 播放量更新
-    ajaxVideo.play(VIDEO_INFO.video.id);
+  // 播放量更新
+  ajaxVideo.play(VIDEO_INFO.video.id);
+  let isCollected = false;
+  if(LOGIN_STATUS.status == true){
     ajaxHistory.add({
       userId: LOGIN_STATUS.user.id,
       videoId: VIDEO_INFO.video.id
     })
-    // 加载评论
-    let hasNextPage = false;
-    let hasPreviousPage = false;
-    // let hasNextPage2 = false;
-    // let hasPreviousPage2 = false;
-    let list = [];
-    let pages = 0;
-    // let pages2 = 0;
-    let isCollected = false;
-    // let list2 = []
-
     const collectedContent = ajaxCollect.show(LOGIN_STATUS.user.id,1)
-    const page = ajaxComment.findId({id: VIDEO_INFO.video.id, offset: 1});
-    console.log(collectedContent.page)
-
     for(let video in collectedContent.page.list){
-        // console.log("***************************"+collectedContent.page)
-        // console.log(collectedContent.page.list[video].id)
-        // console.log(VIDEO_INFO.video.id)
-        if(collectedContent.page.list[video].id === VIDEO_INFO.video.id){
-            isCollected = true
-        }
+      if(collectedContent.page.list[video].id === VIDEO_INFO.video.id){
+        isCollected = true
+      }
     }
+  }
+  // 加载评论
+  let hasNextPage = false;
+  let hasPreviousPage = false;
+  // let hasNextPage2 = false;
+  // let hasPreviousPage2 = false;
+  let list = [];
+  let pages = 0;
+  // let pages2 = 0;
 
-    if (page.page !== undefined) {
-        ({
-            page: {
-                hasNextPage = false // 是否有后一页
-                , hasPreviousPage = false // 是否有前一页
-                , list = {} // 当前页的元素数组
-                , pages = 0 // 总页数
-            }
-        } = page);
+  // let list2 = []
+
+
+  const page = ajaxComment.findId({id: VIDEO_INFO.video.id, offset: 1});
+  // console.log(collectedContent.page)
+
+
+
+  if (page.page !== undefined) {
+    ({
+      page: {
+        hasNextPage = false // 是否有后一页
+        , hasPreviousPage = false // 是否有前一页
+        , list = {} // 当前页的元素数组
+        , pages = 0 // 总页数
+      }
+    } = page);
+  }
+
+  // if (collectedContent.page !== undefined) {
+  //     ({
+  //         page: {
+  //             hasNextPage2 = false // 是否有后一页
+  //             , hasPreviousPage2 = false // 是否有前一页
+  //             , list2 = {} // 当前页的元素数组
+  //             , pages2 = 0 // 总页数
+  //         }
+  //     } = collectedContent);
+  // }
+
+  const video_vue = new Vue({
+    el: '#video_vue'
+    , data: {
+      STORAGE_SERVER: STORAGE_SERVER + '/'
+      , login: LOGIN_STATUS.status === true
+      , user: LOGIN_STATUS.user
+      , videoFound: VIDEO_INFO.status === "success"
+      , video: VIDEO_INFO.video
+      , liked: false
+      , collected: isCollected
+      , newBarrage: {
+        color: '白色'
+        , position: '浮动'
+        , content: ''
+      }, colors: {
+        '白色': '#ffffff'
+        , '黑色': '#000000'
+        , '红色': '#ff0000'
+        , '绿色': '#00ff00'
+        , '蓝色': '#0000ff'
+        , '黄色': '#ffff00'
+      }, positions: {
+        '浮动': 2
+        , '固定': 0
+      }, newComment: ''
+      , comments: list
+      // , collection: list2
+      , commentsFound: list.length !== 0
+      , offset: 1
+      , canNext: hasNextPage
+      , canBefore: hasPreviousPage
+      // , canNext2: hasNextPage2
+      // , canBefore2: hasPreviousPage2
+      , pages
+      // , pages2
+      , to: 1
+      , barrageMsg: ''
+      , commentMsg: ''
+      , videoBarrage: {}
     }
-
-    // if (collectedContent.page !== undefined) {
-    //     ({
-    //         page: {
-    //             hasNextPage2 = false // 是否有后一页
-    //             , hasPreviousPage2 = false // 是否有前一页
-    //             , list2 = {} // 当前页的元素数组
-    //             , pages2 = 0 // 总页数
-    //         }
-    //     } = collectedContent);
-    // }
-
-    const video_vue = new Vue({
-        el: '#video_vue'
-        , data: {
-            STORAGE_SERVER: STORAGE_SERVER + '/'
-            , login: LOGIN_STATUS.status === true
-            , user: LOGIN_STATUS.user
-            , videoFound: VIDEO_INFO.status === "success"
-            , video: VIDEO_INFO.video
-            , liked: false
-            , collected: isCollected
-            , newBarrage: {
-                color: '白色'
-                , position: '浮动'
-                , content: ''
-            }, colors: {
-                '白色': '#ffffff'
-                , '黑色': '#000000'
-                , '红色': '#ff0000'
-                , '绿色': '#00ff00'
-                , '蓝色': '#0000ff'
-                , '黄色': '#ffff00'
-            }, positions: {
-                '浮动': 2
-                , '固定': 0
-            }, newComment: ''
-            , comments: list
-            // , collection: list2
-            , commentsFound: list.length !== 0
-            , offset: 1
-            , canNext: hasNextPage
-            , canBefore: hasPreviousPage
-            // , canNext2: hasNextPage2
-            // , canBefore2: hasPreviousPage2
-            , pages
-            // , pages2
-            , to: 1
-            , barrageMsg: ''
-            , commentMsg: ''
-            , videoBarrage: {}
+    , methods: {
+      like() {
+        if (!this.liked) {
+          ajaxVideo.like(VIDEO_INFO.video.id);
+          this.video.countLike++;
+          this.liked = true;
         }
-        , methods: {
-            like() {
-                if (!this.liked) {
-                    ajaxVideo.like(VIDEO_INFO.video.id);
-                    this.video.countLike++;
-                    this.liked = true;
-                }
-            },collect(){
-                if(!this.collected){
-                    // console.log("++++++++++++++++++++++++++++" +VIDEO_INFO.video.id)
-                    ajaxCollect.collect({
-                        userId: LOGIN_STATUS.user.id,
-                        videoId:this.video.id
-                    });
-                    this.collected = true
-                }
-                else {
-                    ajaxCollect.unCollect({
-                        userId: LOGIN_STATUS.user.id,
-                        videoId:this.video.id
-                    })
-                    this.collected = false
-                }
-            }, sendBarrage() {
-                if (this.newBarrage.content.trim().length === 0) {
-                    this.barrageMsg = '不能发送空弹幕';
-                    return;
-                }
-                /*this.videoBarrage.add({
-                  value: this.newBarrage.content
-                  , color: this.nowColor
-                  , speed: this.nowPosition
-                  , time: Math.ceil($('#videoBarrage')[0].currentTime)
-                });*/
-                const {status, msg} = ajaxBarrage.addvb({
-                    content: this.newBarrage.content
-                    , videoId: this.video.id
-                    , color: this.nowColor
-                    , offtime: Math.ceil($('#videoBarrage')[0].currentTime)
-                    , position: this.nowPosition
-                });
-                if (status === undefined || status === "failure") {
-                    this.barrageMsg = msg || '网络连接异常';
-                    return;
-                } else {
-                    this.barrageMsg = '发送成功';
-                    this.newBarrage.content = '';
-                }
-                ;
-                this.videoBarrage.add({
-                    value: this.newBarrage.content
-                    , color: this.nowColor
-                    , speed: this.nowPosition
-                    , time: Math.ceil($('#videoBarrage')[0].currentTime)
-                });
-            }, sendComment() {
-                this.commentMsg = '';
-                if (this.newComment.trim().length === 0) {
-                    this.commentMsg = '不能发送空评论';
-                    return;
-                }
-                const {status, msg} = ajaxComment.add({
-                    content: this.newComment
-                    , videoId: this.video.id
-                });
-                if (status === undefined || status === "failure") {
-                    this.commentMsg = msg || '网络连接异常';
-                    return;
-                } else {
-                    this.commentMsg = '发送成功';
-                    this.newComment = '';
-                }
-                this.offset = 1;
-                const {
-                    page: {
-                        hasNextPage = false
-                        , hasPreviousPage = false
-                        , list = {}
-                        , pages = 0
-                    }
-                } = ajaxComment.findId({id: this.video.id, offset: this.offset});
-                this.comments = list;
-                this.commentsFound = this.comments.length !== 0;
-                this.canNext = hasNextPage;
-                this.canBefore = hasPreviousPage;
-                this.to = this.offset;
-                this.pages = pages;
-            }, likeComment(e) {
-                const idx = e.target.id.replace('comment-', '');
-                const comment = this.comments[idx];
-                ajaxComment.like(comment.id);
-                comment.countLike++;
-                $(`#comment-${idx}`)[0].style.display = 'none';
-                $(`#comment-liked-${idx}`)[0].style.display = 'block';
-            // }, deleteComment(e) {
-            //     const idx = e.target.id.replace('comment-delete-', '');
-            //     const comment = this.comments[idx];
-            //     ajaxComment.delete(comment.id);
-            //     delete this.comments[idx];
-            }, calcTime(localdatetime) {
-                return utils.calcTime(localdatetime.dateTime).toLocaleString();
-            }, next(e) {
-                if (e.target.classList.contains("disabled")) {
-                    return;
-                }
-                this.offset++;
-                const {
-                    page: {
-                        hasNextPage = false
-                        , hasPreviousPage = false
-                        , list = {}
-                        , pages = 0
-                    }
-                } = ajaxComment.findId({id: this.video.id, offset: this.offset});
-                this.comments = list;
-                this.commentsFound = this.comments.length !== 0;
-                this.canNext = hasNextPage;
-                this.canBefore = hasPreviousPage;
-                this.to = this.offset;
-                this.pages = pages;
-            }, before(e) {
-                if (e.target.classList.contains("disabled")) {
-                    return;
-                }
-                this.offset--;
-                const {
-                    page: {
-                        hasNextPage = false
-                        , hasPreviousPage = false
-                        , list = {}
-                        , pages = 0
-                    }
-                } = ajaxComment.findId({id: this.video.id, offset: this.offset});
-                this.comments = list;
-                this.commentsFound = this.comments.length !== 0;
-                this.canNext = hasNextPage;
-                this.canBefore = hasPreviousPage;
-                this.to = this.offset;
-                this.pages = pages;
-            }, go() {
-                if (this.to < 1 || this.to > this.pages) {
-                    this.to = this.offset;
-                    return;
-                }
-                this.offset = this.to;
-                const {
-                    page: {
-                        hasNextPage = false
-                        , hasPreviousPage = false
-                        , list = {}
-                        , pages = 0
-                    }
-                } = ajaxComment.findId({id: this.video.id, offset: this.offset});
-                this.comments = list;
-                this.commentsFound = this.comments.length !== 0;
-                this.canNext = hasNextPage;
-                this.canBefore = hasPreviousPage;
-                this.pages = pages;
-            }
-        }, computed: {
-            nowColor() {
-                return this.colors[this.newBarrage.color];
-            }, nowPosition() {
-                return this.positions[this.newBarrage.position];
-            }, reverseColor() {
-                const c = Number.parseInt('0x'.concat(this.nowColor.substr(-6)));
-                const res = Number("0xffffff") - c;
-                return '#' + (Number.isNaN(res) ? "ffffff" : `000000${res.toString(16)}`.substr(-6));
-            }
-        }, mounted() {
-            /*ajaxHistory.add({
-                userId: LOGIN_STATUS.user.id,
-                videoId: this.video.id
-            })*/
-            const {barrages} = ajaxBarrage.findId(this.video.id);
-            const rawBarrages = barrages || [{
-                content: ''
-                , offtime: 0
-                , position: 0
-                , color: '#ffffff'
-            }];
-            const dataBarrages = rawBarrages.map(i => {
-                return {
-                    value: i.content
-                    , time: i.offtime
-                    , speed: i.position
-                    , color: i.color
-                }
-            });
-
-            const eleCanvas = $('#canvasBarrage')[0];
-            const eleVideo = $('#videoBarrage')[0];
-            this.videoBarrage = new CanvasBarrage(eleCanvas, eleVideo, {
-                data: dataBarrages
-            });
+      },collect(){
+        if(!this.collected){
+          // console.log("++++++++++++++++++++++++++++" +VIDEO_INFO.video.id)
+          ajaxCollect.collect({
+            userId: LOGIN_STATUS.user.id,
+            videoId:this.video.id
+          });
+          this.collected = true
         }
-    });
+        else {
+          ajaxCollect.unCollect({
+            userId: LOGIN_STATUS.user.id,
+            videoId:this.video.id
+          })
+          this.collected = false
+        }
+      }, sendBarrage() {
+        if (this.newBarrage.content.trim().length === 0) {
+          this.barrageMsg = '不能发送空弹幕';
+          return;
+        }
+        /*this.videoBarrage.add({
+          value: this.newBarrage.content
+          , color: this.nowColor
+          , speed: this.nowPosition
+          , time: Math.ceil($('#videoBarrage')[0].currentTime)
+        });*/
+        const {status, msg} = ajaxBarrage.addvb({
+          content: this.newBarrage.content
+          , videoId: this.video.id
+          , color: this.nowColor
+          , offtime: Math.ceil($('#videoBarrage')[0].currentTime)
+          , position: this.nowPosition
+        });
+        if (status === undefined || status === "failure") {
+          this.barrageMsg = msg || '网络连接异常';
+          return;
+        } else {
+          this.barrageMsg = '发送成功';
+          this.newBarrage.content = '';
+        }
+        ;
+        this.videoBarrage.unshift({
+          value: this.newBarrage.content
+          , color: this.nowColor
+          , speed: this.nowPosition
+          , time: Math.ceil($('#videoBarrage')[0].currentTime)
+        });
+      }, sendComment() {
+        this.commentMsg = '';
+        if (this.newComment.trim().length === 0) {
+          this.commentMsg = '不能发送空评论';
+          return;
+        }
+        const {status, msg} = ajaxComment.add({
+          content: this.newComment
+          , videoId: this.video.id
+        });
+        if (status === undefined || status === "failure") {
+          this.commentMsg = msg || '网络连接异常';
+          return;
+        } else {
+          this.commentMsg = '发送成功';
+          this.newComment = '';
+        }
+        this.offset = 1;
+        const {
+          page: {
+            hasNextPage = false
+            , hasPreviousPage = false
+            , list = {}
+            , pages = 0
+          }
+        } = ajaxComment.findId({id: this.video.id, offset: this.offset});
+        this.comments = list;
+        this.commentsFound = this.comments.length !== 0;
+        this.canNext = hasNextPage;
+        this.canBefore = hasPreviousPage;
+        this.to = this.offset;
+        this.pages = pages;
+      }, likeComment(e) {
+        const idx = e.target.id.replace('comment-', '');
+        const comment = this.comments[idx];
+        ajaxComment.like(comment.id);
+        comment.countLike++;
+        $(`#comment-${idx}`)[0].style.display = 'none';
+        $(`#comment-liked-${idx}`)[0].style.display = 'block';
+      },
+      deleteComment(e) {
+        const idx = e.target.id.replace('comment-delete-', '');
+        const comment = this.comments[idx];
+        ajaxComment.delete(comment.id);
+        this.offset = 1
+        const {
+          page: {
+            hasNextPage = false
+            , hasPreviousPage = false
+            , list = {}
+            , pages = 0
+          }
+        } = ajaxComment.findId({id: this.video.id, offset: this.offset});
+        this.comments = list;
+        this.commentsFound = this.comments.length !== 0;
+        this.canNext = hasNextPage;
+        this.canBefore = hasPreviousPage;
+        this.to = this.offset;
+        this.pages = pages;
+      },calcTime(localdatetime) {
+        return utils.calcTime(localdatetime.dateTime).toLocaleString();
+      }, next(e) {
+        if (e.target.classList.contains("disabled")) {
+          return;
+        }
+        this.offset++;
+        const {
+          page: {
+            hasNextPage = false
+            , hasPreviousPage = false
+            , list = {}
+            , pages = 0
+          }
+        } = ajaxComment.findId({id: this.video.id, offset: this.offset});
+        this.comments = list;
+        this.commentsFound = this.comments.length !== 0;
+        this.canNext = hasNextPage;
+        this.canBefore = hasPreviousPage;
+        this.to = this.offset;
+        this.pages = pages;
+      }, before(e) {
+        if (e.target.classList.contains("disabled")) {
+          return;
+        }
+        this.offset--;
+        const {
+          page: {
+            hasNextPage = false
+            , hasPreviousPage = false
+            , list = {}
+            , pages = 0
+          }
+        } = ajaxComment.findId({id: this.video.id, offset: this.offset});
+        this.comments = list;
+        this.commentsFound = this.comments.length !== 0;
+        this.canNext = hasNextPage;
+        this.canBefore = hasPreviousPage;
+        this.to = this.offset;
+        this.pages = pages;
+      }, go() {
+        if (this.to < 1 || this.to > this.pages) {
+          this.to = this.offset;
+          return;
+        }
+        this.offset = this.to;
+        const {
+          page: {
+            hasNextPage = false
+            , hasPreviousPage = false
+            , list = {}
+            , pages = 0
+          }
+        } = ajaxComment.findId({id: this.video.id, offset: this.offset});
+        this.comments = list;
+        this.commentsFound = this.comments.length !== 0;
+        this.canNext = hasNextPage;
+        this.canBefore = hasPreviousPage;
+        this.pages = pages;
+      }
+    }, computed: {
+      nowColor() {
+        return this.colors[this.newBarrage.color];
+      }, nowPosition() {
+        return this.positions[this.newBarrage.position];
+      }, reverseColor() {
+        const c = Number.parseInt('0x'.concat(this.nowColor.substr(-6)));
+        const res = Number("0xffffff") - c;
+        return '#' + (Number.isNaN(res) ? "ffffff" : `000000${res.toString(16)}`.substr(-6));
+      }
+    }, mounted() {
+      const {barrages} = ajaxBarrage.findId(this.video.id);
+      const rawBarrages = barrages || [{
+        content: ''
+        , offtime: 0
+        , position: 0
+        , color: '#ffffff'
+      }];
+      const dataBarrages = rawBarrages.map(i => {
+        return {
+          value: i.content
+          , time: i.offtime
+          , speed: i.position
+          , color: i.color
+        }
+      });
+
+      const eleCanvas = $('#canvasBarrage')[0];
+      const eleVideo = $('#videoBarrage')[0];
+      this.videoBarrage = new CanvasBarrage(eleCanvas, eleVideo, {
+        data: dataBarrages
+      });
+    }
+  });
 
 </script>
 </body>
